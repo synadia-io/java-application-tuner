@@ -93,7 +93,7 @@ public class ConsumerAndSubscriber implements Runnable {
                 }
                 break;
 
-            case Do_Not_Sub:
+            case Create_Consumer_Only:
                 for (int conIx = 0; conIx < consumersEach; conIx++) {
                     createConsumer(conIx, getName(conIx));
                 }
@@ -188,6 +188,10 @@ public class ConsumerAndSubscriber implements Runnable {
                     subs[conIx] = js.subscribe(null, d, Message::ack, false,
                         PushSubscribeOptions.bind(settings.streamName, cc.getName()));
                     break;
+                case Push_Fast_Bind:
+                    subs[conIx] = js.subscribe(null, d, Message::ack, false,
+                        PushSubscribeOptions.fastBind(settings.streamName, cc.getName()));
+                    break;
                 case Pull_Without_Stream:
                     subs[conIx] = js.subscribe(cc.getFilterSubject(),
                         PullSubscribeOptions.builder().configuration(cc).build());
@@ -198,6 +202,9 @@ public class ConsumerAndSubscriber implements Runnable {
                     break;
                 case Pull_Bind:
                     subs[conIx] = js.subscribe(null, PullSubscribeOptions.bind(settings.streamName, cc.getName()));
+                    break;
+                case Pull_Fast_Bind:
+                    subs[conIx] = js.subscribe(null, PullSubscribeOptions.fastBind(settings.streamName, cc.getName()));
                     break;
             }
             subscribeTime[conIx] = System.nanoTime() - start;

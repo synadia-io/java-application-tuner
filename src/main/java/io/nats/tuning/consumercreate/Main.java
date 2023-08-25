@@ -32,24 +32,47 @@ public class Main {
 
         settings.optionsBuilder = () -> Options.builder().server("localhost:4222,localhost:5222,localhost:6222");
 
-        int[] threadsPerApp = new int[]{100};
-        AppStrategy[] appStrategies = new AppStrategy[]{AppStrategy.Client_Api_Subscribe}; // , AppStrategy.Individual_Immediately, AppStrategy.Individual_After_Creates};
-        SubStrategy[] subStrategies = new SubStrategy[]{SubStrategy.Pull_Provide_Stream}; // SubStrategy.values();
+        AppStrategy[] appStrategies = new AppStrategy[] {
+            AppStrategy.Client_Api_Subscribe
+//            , AppStrategy.Individual_Immediately
+//            , AppStrategy.Individual_After_Creates
+//            , Create_Consumer_Only
+        };
+
+        SubStrategy[] subStrategies = new SubStrategy[] {
+            SubStrategy.Pull_Fast_Bind
+//            , SubStrategy.Pull_Bind
+//            , SubStrategy.Pull_Provide_Stream
+//            , SubStrategy.Pull_Without_Stream
+//            , SubStrategy.Push_Without_Stream
+//            , SubStrategy.Push_Provide_Stream
+//            , SubStrategy.Push_Bind
+//            , SubStrategy.Push_Fast_Bind
+        };
+
+        int[] threadsPerApp = new int[]{1, 10, 100};
 
         for (AppStrategy asy : appStrategies) {
             for (SubStrategy ssy : subStrategies) {
                 for (int tpa : threadsPerApp) {
-                    Thread.sleep(1000);
+                    settings.appStrategy = asy;
+                    settings.subStrategy = ssy;
+                    settings.threadsPerApp = tpa;
+
                     String title = tpa + " " + asy.name().toLowerCase().replace("_", " ");
                     settings.streamName = title.replace(" ", "-");
                     settings.subjectGenerator = new UniqueSubjectGenerator();
-                    settings.threadsPerApp = tpa;
-                    settings.appStrategy = asy;
-                    settings.subStrategy = ssy;
                     settings.timeoutMs = 180_000;
-//                    settings.autoReportFrequency();
+
+                    // either set the reportFrequency manually or
+                    // call autoReportFrequency which makes this calculation:
+                    // reportFrequency = Math.max(1, (int) (consumersPerApp / threadsPerApp * autoReportFactor));
+
+                    // settings.reportFrequency = 10;
+                    settings.autoReportFrequency();
 
                     if (settings.isValid()) { // just skip invalid settings when strategies don't work together.
+                        Thread.sleep(1000);
                         Report r = run(title, settings);
                         if (r != null) {
                             reports.add(r);

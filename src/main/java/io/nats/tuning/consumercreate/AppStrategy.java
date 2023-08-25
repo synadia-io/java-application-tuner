@@ -13,5 +13,5 @@ public enum AppStrategy {
     Individual_Immediately,
     Individual_After_Creates,
     Client_Api_Subscribe,
-    Do_Not_Sub
+    Create_Consumer_Only
 }
