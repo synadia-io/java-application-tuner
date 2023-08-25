@@ -7,8 +7,6 @@ This repository contains customizable code to help you tune your system.
 Currently, when starting up a large number of ephemeral consumers when your app starts up 
 as large number of these may take some time to complete, depending on your parallelization and volume. 
 
-___
-
 ```
 Copyright (c) 2021-2023 Synadia Communications Inc.  All Rights Reserved.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
