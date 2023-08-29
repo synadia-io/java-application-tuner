@@ -70,7 +70,10 @@ public class Settings {
     }
     public boolean isValid() {
         if (appStrategy == AppStrategy.Client_Api_Subscribe) {
-            if (subStrategy == SubStrategy.Push_Bind || subStrategy == SubStrategy.Pull_Bind) {
+            if (subStrategy == SubStrategy.Push_Bind
+                || subStrategy == SubStrategy.Pull_Bind
+                || subStrategy == SubStrategy.Pull_Fast_Bind
+            ) {
                 return false;
             }
         }

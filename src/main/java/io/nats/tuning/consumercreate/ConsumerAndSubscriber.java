@@ -93,7 +93,7 @@ public class ConsumerAndSubscriber implements Runnable {
                 }
                 break;
 
-            case Do_Not_Sub:
+            case Create_Consumer_Only:
                 for (int conIx = 0; conIx < consumersEach; conIx++) {
                     createConsumer(conIx, getName(conIx));
                 }
@@ -114,7 +114,7 @@ public class ConsumerAndSubscriber implements Runnable {
             return cc;
         }
         catch (Exception e) {
-            System.err.println("Create Consumer Exception | " + name + " | " + e);
+            Utils.reportEx(e, "Create Consumer Exception " + name);
             return null;
         }
     }
@@ -153,6 +153,7 @@ public class ConsumerAndSubscriber implements Runnable {
             }
             subscribeTime[conIx] = System.nanoTime() - start;
             if (conIx == 0 || conIx % settings.reportFrequency == 0) {
+                System.out.println("-------------> " + name + " " + subs + " " + subs[conIx]);
                 if (name.equals(subs[conIx].getConsumerName())) {
                     Utils.report("Subscribe | " + name + " | " + settings.time(subscribeTime[conIx]) + settings.timeLabel());
                 }
@@ -162,7 +163,7 @@ public class ConsumerAndSubscriber implements Runnable {
             }
         }
         catch (Exception e) {
-            System.err.println("Subscribe Exception | " + name + " | " + e);
+            Utils.reportEx(e, "Subscribe Exception " + name);
             subscribeTime[conIx] = -1;
         }
     }
@@ -184,10 +185,6 @@ public class ConsumerAndSubscriber implements Runnable {
                     subs[conIx] = js.subscribe(cc.getFilterSubject(), d, Message::ack, false,
                         PushSubscribeOptions.builder().stream(settings.streamName).configuration(cc).build());
                     break;
-                case Push_Bind:
-                    subs[conIx] = js.subscribe(null, d, Message::ack, false,
-                        PushSubscribeOptions.bind(settings.streamName, cc.getName()));
-                    break;
                 case Pull_Without_Stream:
                     subs[conIx] = js.subscribe(cc.getFilterSubject(),
                         PullSubscribeOptions.builder().configuration(cc).build());
@@ -199,6 +196,9 @@ public class ConsumerAndSubscriber implements Runnable {
                 case Pull_Bind:
                     subs[conIx] = js.subscribe(null, PullSubscribeOptions.bind(settings.streamName, cc.getName()));
                     break;
+                case Pull_Fast_Bind:
+                    subs[conIx] = js.subscribe(null, PullSubscribeOptions.fastBind(settings.streamName, cc.getName()));
+                    break;
             }
             subscribeTime[conIx] = System.nanoTime() - start;
             if (conIx == 0 || conIx % settings.reportFrequency == 0) {
@@ -206,7 +206,7 @@ public class ConsumerAndSubscriber implements Runnable {
             }
         }
         catch (Exception e) {
-            System.err.println("SUB EX " + cc.getName() + " | " + e);
+            Utils.reportEx(e, "SUB EX " + cc.getName());
         }
     }
 

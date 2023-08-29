@@ -15,7 +15,8 @@ public enum SubStrategy {
     Push_Bind(false),
     Pull_Without_Stream(true),
     Pull_Provide_Stream(true),
-    Pull_Bind(true);
+    Pull_Bind(true),
+    Pull_Fast_Bind(true);
 
     public final boolean pull;
 

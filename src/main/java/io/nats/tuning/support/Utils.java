@@ -39,8 +39,31 @@ public class Utils
         System.out.println(stamp() + " [INFO] " + o);
     }
 
-    public static void reportEx(Object o) {
-        System.err.println(stamp() + " [ERROR] " + o);
+    public static void reportEx(Exception e) {
+        reportEx(e, null);
+    }
+
+    static final Object REXLOCK = new Object();
+    public static void reportEx(Exception e, String label) {
+        label = makeLabel(label);
+        String stamp = stamp();
+        synchronized (REXLOCK) {
+            System.err.println(stamp + " [ERROR]" + label + e);
+            StackTraceElement[] stack = e.getStackTrace();
+            for (StackTraceElement ste : stack) {
+                System.err.println(stamp + " [ERROR]" + label + ste);
+            }
+        }
+    }
+
+    private static String makeLabel(String label) {
+        if (label == null) {
+            label = " ";
+        }
+        else {
+            label = "[" + label + "] ";
+        }
+        return label;
     }
 
     public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");

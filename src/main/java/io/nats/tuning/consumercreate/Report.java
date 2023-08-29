@@ -30,6 +30,10 @@ public class Report {
     }
 
     public static void writeCsv(List<Report> reports, String fn) throws Exception {
+        if (reports.isEmpty()) {
+            System.err.println("Nothing to write.");
+            return;
+        }
         try (PrintStream ps = new PrintStream(fn)) {
             Report r0 = reports.get(0);
             int rows = r0.rows();
