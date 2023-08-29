@@ -34,20 +34,19 @@ public class Main {
 
         AppStrategy[] appStrategies = new AppStrategy[] {
             AppStrategy.Client_Api_Subscribe
-//            , AppStrategy.Individual_Immediately
-//            , AppStrategy.Individual_After_Creates
-//            , Create_Consumer_Only
+            , AppStrategy.Individual_Immediately
+            , AppStrategy.Individual_After_Creates
+            , AppStrategy.Create_Consumer_Only
         };
 
         SubStrategy[] subStrategies = new SubStrategy[] {
             SubStrategy.Pull_Fast_Bind
-//            , SubStrategy.Pull_Bind
-//            , SubStrategy.Pull_Provide_Stream
-//            , SubStrategy.Pull_Without_Stream
-//            , SubStrategy.Push_Without_Stream
-//            , SubStrategy.Push_Provide_Stream
-//            , SubStrategy.Push_Bind
-//            , SubStrategy.Push_Fast_Bind
+            , SubStrategy.Pull_Bind
+            , SubStrategy.Pull_Provide_Stream
+            , SubStrategy.Pull_Without_Stream
+            , SubStrategy.Push_Without_Stream
+            , SubStrategy.Push_Provide_Stream
+            , SubStrategy.Push_Bind
         };
 
         int[] threadsPerApp = new int[]{1, 10, 100};
@@ -154,9 +153,7 @@ public class Main {
             return r;
         }
         catch (Exception e) {
-            System.err.println("MAIN RUN EX");
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+            Utils.reportEx(e, "MAIN RUN EX");
             return null;
         }
     }
