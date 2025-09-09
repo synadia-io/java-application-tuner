@@ -24,7 +24,7 @@ import static io.nats.tuning.consumercreate.Report.writeTextReport;
 /*
     Code to help tune Consumer Create on startup
  */
-public class Main {
+public class MainConsumerCreate {
 
     public static void main(String[] args) throws Exception {
         List<Report> reports = new ArrayList<>();
