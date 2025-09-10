@@ -27,7 +27,7 @@ public class MainConnectionTune {
     static final int JitterMs = 10;
     static final long ConnectionTimeoutMs = 2000; // Options.DEFAULT_CONNECTION_TIMEOUT = 2 seconds
     static final long SocketWriteTimeoutMs = 500; // Options.DEFAULT_SOCKET_WRITE_TIMEOUT = 1 minute
-    static final int MaxMessagesInOutgoingQueue = 1000; // Options.DEFAULT_MAX_MESSAGES_IN_OUTGOING_QUEUE = 500 [messages]
+    static final int MaxMessagesInOutgoingQueue = 5000; // Options.DEFAULT_MAX_MESSAGES_IN_OUTGOING_QUEUE = 5000 [messages]
     static final int BufferSizeInBytes = 16 * 1024; // Options.DEFAULT_BUFFER_SIZE = 64k (64 * 1024)
     static final long StatisticsThresholdMillis = 1;
 
