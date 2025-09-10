@@ -2,7 +2,8 @@
 
 This repository contains customizable code to help you tune your system.
 
-To build, run gradle to create an uberjar. The version with this project is 6.8.3
+Gradle can be used to build the project and run examples from the command line. 
+The Gradle version with this project is 6.8.3, and the uber jar can be built like so: 
 
 ```
 gradlew clean uberJar 
