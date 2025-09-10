@@ -10,6 +10,7 @@
 package io.nats.tuning.connection;
 
 import io.nats.client.Connection;
+import io.nats.client.ConnectionListener;
 import io.nats.client.Nats;
 import io.nats.client.Options;
 import io.nats.client.impl.NoOpStatistics;
@@ -33,11 +34,11 @@ public class MainConnectionTune {
 
     @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
     public static void main(String[] args) throws InterruptedException, IOException {
-        McStatisticsCollector statisticsCollector = new McStatisticsCollector();
+        CustomStatisticsCollector statisticsCollector = new CustomStatisticsCollector();
 
         Options options = Options.builder()
             .servers(ServerBootstrap)
-            .connectionListener((conn, event) -> System.out.println(event))
+            .connectionListener(new CustomConnectionListener())
             .connectionTimeout(ConnectionTimeoutMs)
             .socketWriteTimeout(SocketWriteTimeoutMs)
             .maxMessagesInOutgoingQueue(MaxMessagesInOutgoingQueue)
@@ -55,7 +56,16 @@ public class MainConnectionTune {
         }
     }
 
-    static class McStatisticsCollector extends NoOpStatistics {
+    static class CustomConnectionListener implements ConnectionListener {
+        @Override
+        public void connectionEvent(Connection conn, Events type) {
+            System.out.println(type.name()
+                    + " | pending queue: " + conn.outgoingPendingMessageCount() + " msgs, " + conn.outgoingPendingBytes() + " bytes"
+            );
+        }
+    }
+
+    static class CustomStatisticsCollector extends NoOpStatistics {
         final long thresholdNanos;
         Connection connection;
 
@@ -66,7 +76,7 @@ public class MainConnectionTune {
         long totalWrites = 0;
         float writeAverage;
 
-        public McStatisticsCollector() {
+        public CustomStatisticsCollector() {
             thresholdNanos = StatisticsThresholdMillis * NANOS_PER_MILLI;
         }
 
@@ -101,6 +111,13 @@ public class MainConnectionTune {
             writeAverage = (float)totalElapsedNanos / totalWrites;
         }
 
+        @Override
+        public void incrementOutBytes(long bytes) {
+            totalMessages++; // I know this is called once per message
+            incrementedAt = System.nanoTime();
+            inFlight += bytes;
+        }
+
         private void report(String label, long elapsedNanos) {
             float elapsedMillis = (float)elapsedNanos / 1_000_000F;
             float writeAverageMillis = writeAverage / 1_000_000F;
@@ -108,13 +125,6 @@ public class MainConnectionTune {
                 + " | " + String.format("%.3f", elapsedMillis) + "ms vs average: " + String.format("%.3f", writeAverageMillis) + "ms"
                 + " | pending queue: " + connection.outgoingPendingMessageCount() + " msgs, " + connection.outgoingPendingBytes() + " bytes"
             );
-        }
-
-        @Override
-        public void incrementOutBytes(long bytes) {
-            totalMessages++; // I know this is called once per message
-            incrementedAt = System.nanoTime();
-            inFlight += bytes;
         }
     }
 }
