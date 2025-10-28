@@ -2,8 +2,7 @@
 
 This is the second version of the attempt to isolate where messages.
 
-java/io/synadia/tuning/cml/CoreMessageLoss.java
-
+The program used for testing is [CoreMessageLoss](src/main/java/io/synadia/tuning/cml/CoreMessageLoss.java).
 Please see the main [README](README.md) for instructions on how to run the program.
 
 #### Results Explanation
