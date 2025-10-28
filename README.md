@@ -18,7 +18,7 @@ Demonstrate how messages can be lost during server or network outages.
 - Run the program.
   - The receivers connect to either the 3rd or 2nd server in a round-robin fashion
   - The sender initially connects to the 1st server, then after disconnect connects to the 2nd server
-- Block or stop the 1st server. This causes the sender to disconnect and reconnect. Unblock or restart after 1 second.
+- Wait a couple seconds then block or stop the 1st server. This causes the sender to disconnect and reconnect. Unblock or restart after 1 second.
 - Review results.
 
 ### Command line run

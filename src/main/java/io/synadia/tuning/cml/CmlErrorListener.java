@@ -34,11 +34,6 @@ public class CmlErrorListener implements ErrorListener {
     @Override
     public void exceptionOccurred(final Connection conn, final Exception exp) {
         Debug.log(label, id(conn), "exceptionOccurred: %s", exp);
-        if (exp.getMessage().contains("NullPointerException")) {
-            System.out.println("\n---------------------------------");
-            exp.printStackTrace(System.out);
-            System.out.println("---------------------------------\n");
-        }
         if (exp.getCause() != null) {
             Debug.log(label, "            cause:", exp.getCause());
         }

@@ -321,7 +321,7 @@ public class CoreMessageLoss {
             nc.publish(TERMINATE_SUBJECT, null);
 
             waitForPending(nc);
-            log(TPS_SENDER, "DONE DONE DONE");
+            log(TPS_SENDER, "Done");
         }
     }
 
