@@ -7,7 +7,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.support;
+package io.synadia.utils;
 
 import io.nats.client.Connection;
 
@@ -17,8 +17,25 @@ import java.util.Date;
 /*
     Code to help tune Consumer Create on startup
  */
-public class Utils
-{
+public abstract class MiscUtils {
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static void sleep(long millis, int nanos) {
+        try {
+            Thread.sleep(millis, nanos);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     public static boolean waitForStatus(Connection conn, long maxWaitMs, Connection.Status statusToWaitFor) {
         long times = (maxWaitMs + 99) / 100;
         for (long x = 0; x < times; x++) {

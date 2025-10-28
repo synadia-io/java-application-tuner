@@ -7,19 +7,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
 import io.nats.client.*;
 import io.nats.client.api.StreamConfiguration;
-import io.nats.tuning.support.UniqueSubjectGenerator;
-import io.nats.tuning.support.Utils;
+import io.synadia.utils.MiscUtils;
+import io.synadia.utils.UniqueSubjectGenerator;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.nats.tuning.consumercreate.Report.writeCsv;
-import static io.nats.tuning.consumercreate.Report.writeTextReport;
+import static io.synadia.tuning.consumercreate.Report.writeCsv;
+import static io.synadia.tuning.consumercreate.Report.writeTextReport;
 
 /*
     Code to help tune Consumer Create on startup
@@ -101,7 +101,7 @@ public class MainConsumerCreate {
 
         try (Connection nc = Nats.connect(settings.optionsBuilder.getBuilder().build())) {
             if (settings.verifyConnectMs > 0) {
-                if (!Utils.waitForStatus(nc, settings.verifyConnectMs, Connection.Status.CONNECTED)) {
+                if (!MiscUtils.waitForStatus(nc, settings.verifyConnectMs, Connection.Status.CONNECTED)) {
                     throw new RuntimeException("Connection not established within verify time of " + settings.verifyConnectMs + "ms");
                 }
             }
@@ -153,7 +153,7 @@ public class MainConsumerCreate {
             return r;
         }
         catch (Exception e) {
-            Utils.reportEx(e, "MAIN RUN EX");
+            MiscUtils.reportEx(e, "MAIN RUN EX");
             return null;
         }
     }

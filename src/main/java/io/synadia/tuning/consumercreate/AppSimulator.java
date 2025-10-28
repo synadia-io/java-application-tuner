@@ -7,13 +7,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
 import io.nats.client.*;
 
 import java.time.Duration;
 
-import static io.nats.tuning.support.Utils.reportEx;
+import static io.synadia.utils.MiscUtils.reportEx;
 
 public class AppSimulator extends Thread {
     private final Settings settings;

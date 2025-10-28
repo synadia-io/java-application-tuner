@@ -7,20 +7,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
-public enum SubStrategy {
-    Push_Without_Stream(false),
-    Push_Provide_Stream(false),
-    Push_Bind(false),
-    Pull_Without_Stream(true),
-    Pull_Provide_Stream(true),
-    Pull_Bind(true),
-    Pull_Fast_Bind(true);
-
-    public final boolean pull;
-
-    SubStrategy(boolean pull) {
-        this.pull = pull;
-    }
+public enum AppStrategy {
+    Individual_Immediately,
+    Individual_After_Creates,
+    Client_Api_Subscribe,
+    Create_Consumer_Only
 }

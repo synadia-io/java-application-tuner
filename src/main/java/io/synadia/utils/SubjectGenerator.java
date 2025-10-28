@@ -7,11 +7,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.utils;
 
-public enum AppStrategy {
-    Individual_Immediately,
-    Individual_After_Creates,
-    Client_Api_Subscribe,
-    Create_Consumer_Only
+public interface SubjectGenerator {
+    String getSubjectPrefix();
+    String getStreamSubject();
+    String getSubject(Object id);
+    String getNextDeliverSubject();
 }

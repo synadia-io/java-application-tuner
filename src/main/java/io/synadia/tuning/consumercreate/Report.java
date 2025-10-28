@@ -7,7 +7,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
 import java.io.PrintStream;
 import java.util.ArrayList;

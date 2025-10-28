@@ -7,7 +7,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.connection;
+package io.synadia.tuning.connection;
 
 import io.nats.client.Connection;
 import io.nats.client.ConnectionListener;

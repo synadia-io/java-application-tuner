@@ -7,13 +7,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
 import io.nats.client.Options;
 import io.nats.client.api.StorageType;
-import io.nats.tuning.support.OptionsBuilderFactory;
-import io.nats.tuning.support.SubjectGenerator;
-import io.nats.tuning.support.UniqueSubjectGenerator;
+import io.synadia.utils.OptionsBuilderFactory;
+import io.synadia.utils.SubjectGenerator;
+import io.synadia.utils.UniqueSubjectGenerator;
 
 public class Settings {
 

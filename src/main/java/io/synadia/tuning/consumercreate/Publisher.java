@@ -7,10 +7,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.consumercreate;
+package io.synadia.tuning.consumercreate;
 
 import io.nats.client.JetStream;
-import io.nats.tuning.support.Utils;
+import io.synadia.utils.MiscUtils;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -47,7 +47,7 @@ public class Publisher extends Thread {
                 totalTime.set(totalTime.get() + System.nanoTime() - start);
             }
             catch (Exception e) {
-                Utils.reportEx(e, "PUB " + id);
+                MiscUtils.reportEx(e, "PUB " + id);
             }
         }
     }

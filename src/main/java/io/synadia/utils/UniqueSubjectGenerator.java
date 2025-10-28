@@ -7,7 +7,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-package io.nats.tuning.support;
+package io.synadia.utils;
 
 import io.nats.client.NUID;
 
