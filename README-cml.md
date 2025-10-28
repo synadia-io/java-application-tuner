@@ -34,7 +34,7 @@ After Disconnect...
 ```
 
 What I believe that these results demonstrate is that the client generally moves all messages to the socket,
-but the socket works at its own paces to move data to the server.
+but the socket works at its own pace to move data to the server.
 
 * Often the "Before Disconnect... Buffered vs Socket Messages" are 0.
 * Notice the gap of 17 messages but the disconnect shows only 5 messages did not get moved to the socket. 
