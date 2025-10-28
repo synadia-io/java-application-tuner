@@ -341,7 +341,21 @@ public class CoreMessageLoss {
             log(TPS_SENDER, "Publishing Control Terminate Message");
             nc.publish(TERMINATE_SUBJECT, null);
 
-            sleep(5000);
+
+            long wait = 30000;
+            while (wait > 0) {
+                sleep(100);
+                int notDone = receivers.size();
+                for (Receiver r : receivers) {
+                    if (r.done.get()) {
+                        notDone--;
+                    }
+                }
+                if (notDone == 0) {
+                    break;
+                }
+                wait -= 100;
+            }
             log(TPS_SENDER, "Done");
         }
     }
@@ -401,7 +415,15 @@ public class CoreMessageLoss {
             r.ready.set(true);
             log(label, "READY");
 
-            sleep(5000);
+
+            long wait = 30000;
+            while (wait > 0) {
+                sleep(100);
+                if (r.done.get()) {
+                    break;
+                }
+                wait -= 100;
+            }
             log(label, "Done");
         }
     }
