@@ -142,7 +142,7 @@ public class CoreMessageLoss {
                         long rm = receivers.get(ix).receivedMessages;
                         receivedMessages += rm;
                     }
-                    log(TPS_RECEIVER, "Total Received Messages: %s", receivedMessages);
+                    log(TPS_RECEIVER, "Total Received Messages: %s", receivedMessages, "Highest Message Id Received: %s", highestMessageId.get());
                     if (System.currentTimeMillis() - lastReceive.get() > WAIT_FOR_MESSAGES) {
                         log(TPS_RECEIVER, "RECEIVER TIMEOUT: %s", System.currentTimeMillis() - lastReceive.get());
                         for (Receiver r : receivers) {
