@@ -33,13 +33,6 @@ After Disconnect...
   Buffered vs Socket Bytes   : 505,653 vs 505,653 ... 0
 ```
 
-What I believe that these results demonstrate is that the client generally moves all messages to the socket,
-but the socket works at its own pace to move data to the server.
-
-* Often the "Before Disconnect... Buffered vs Socket Messages" are 0.
-* Notice the gap of 17 messages but the disconnect shows only 5 messages did not get moved to the socket. 
-In this case the 5 properly matches number of messages that can full fit inside the byte array buffer - 5 x 12k < 64k 
-
 ### Receiver(s)
 Connect to server 2 or 3 and set up a two dispatched subscription on agreed subject. 
 

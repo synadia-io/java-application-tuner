@@ -13,7 +13,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -33,6 +36,7 @@ public class CoreMessageLoss {
     private static final String TEST_SUBJECT = "test";
     private static final String TERMINATE_SUBJECT = "term";
     private static final String TEST_QUEUE = "q";
+    private static final long WAIT_FOR_MESSAGES = 5000;
 
     private static final String KEY_PROPS = "props";
     private static final String[] KEYS_SERVERS = new String[]{"servers", "s"};
@@ -131,6 +135,23 @@ public class CoreMessageLoss {
             }
 
             // Receivers periodic reporting
+            scheduler.scheduleAtFixedRate(
+                () -> {
+                    long receivedMessages = 0;
+                    for (int ix = 0; ix < numReceivers; ix++) {
+                        long rm = receivers.get(ix).receivedMessages;
+                        receivedMessages += rm;
+                    }
+                    log(TPS_RECEIVER, "Total Received Messages: %s", receivedMessages);
+                    if (System.currentTimeMillis() - lastReceive.get() > WAIT_FOR_MESSAGES) {
+                        log(TPS_RECEIVER, "RECEIVER TIMEOUT: %s", System.currentTimeMillis() - lastReceive.get());
+                        for (Receiver r : receivers) {
+                            r.done.set(true);
+                        }
+                    }
+                },
+                2500, 2500, TimeUnit.MILLISECONDS);
+
             scheduler.scheduleAtFixedRate(
                 () -> {
                     long receivedMessages = 0;
@@ -320,34 +341,16 @@ public class CoreMessageLoss {
             log(TPS_SENDER, "Publishing Control Terminate Message");
             nc.publish(TERMINATE_SUBJECT, null);
 
-            waitForPending(nc);
+
+            int sleeps = 1;
+            while (sendStats.getTotalPayloadBufferedMessages() < pubId.get()) {
+                if (--sleeps == 0) {
+                    sleeps = 10;
+                    log(TPS_SENDER, "Payload Buffered Messages So Far: " + sendStats.getTotalPayloadBufferedMessages());
+                }
+                sleep(100);
+            }
             log(TPS_SENDER, "Done");
-        }
-    }
-
-    private void waitForPending(Connection nc) {
-        long pending = nc.outgoingPendingMessageCount();
-        long rounds = 10000;
-        log(TPS_SENDER, "Waiting for %s queued messages to be sent...", pending);
-        while (rounds-- > 0 && pending > 0) {
-            if (nc.getStatus() != Connection.Status.CONNECTED) {
-                rounds = 10000;
-                sleep(1000);
-                continue;
-            }
-
-            sleep(10);
-            if (rounds % 250 == 0) {
-                log(TPS_SENDER, "Waiting for %s queued messages to be sent...", pending);
-            }
-            pending = nc.outgoingPendingMessageCount();
-        }
-        pending = nc.outgoingPendingMessageCount();
-        if (pending > 0) {
-            log(TPS_SENDER, "!!!!! Queue Failed to Empty: %s", pending);
-        }
-        else {
-            log(TPS_SENDER, "Queue empty");
         }
     }
 
@@ -359,8 +362,11 @@ public class CoreMessageLoss {
         CmlConnectionListener receiveCL;
         CmlErrorListener receiveEL;
         AtomicBoolean ready = new AtomicBoolean(false);
+        AtomicBoolean done = new AtomicBoolean(false);
     }
 
+    AtomicLong highestMessageId = new AtomicLong(0);
+    AtomicLong lastReceive = new AtomicLong(System.currentTimeMillis());
     LinkedBlockingQueue<Long> messageIdsTrackingQueue = new LinkedBlockingQueue<>();
     List<Receiver> receivers = new ArrayList<>();
 
@@ -384,10 +390,11 @@ public class CoreMessageLoss {
         try (Connection nc = Nats.connect(options)) {
             Dispatcher d = nc.createDispatcher();
 
-            CountDownLatch latch = new CountDownLatch(1);
-
             d.subscribe(TEST_SUBJECT, TEST_QUEUE, msg -> {
-                messageIdsTrackingQueue.add(extractMessageId(msg));
+                long mid = extractMessageId(msg);
+                messageIdsTrackingQueue.add(mid);
+                highestMessageId.set(Math.max(highestMessageId.get(), mid));
+                lastReceive.set(System.currentTimeMillis());
                 if (++r.receivedMessages == 1) {
                     log(label, "Started Receiving");
                 }
@@ -395,15 +402,15 @@ public class CoreMessageLoss {
 
             d.subscribe(TERMINATE_SUBJECT, msg -> {
                 log(label, "Received Control - Terminate Message.");
-                latch.countDown();
+                r.done.set(true);
             });
 
             sleep(50);
             r.ready.set(true);
             log(label, "READY");
 
-            if (!latch.await(60, TimeUnit.SECONDS)) {
-                log(label, "!!!!! Terminate Message NOT Received");
+            while (!r.done.get()) {
+                sleep(200);
             }
         }
     }
