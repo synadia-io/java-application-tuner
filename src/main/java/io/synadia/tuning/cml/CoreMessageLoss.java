@@ -341,15 +341,7 @@ public class CoreMessageLoss {
             log(TPS_SENDER, "Publishing Control Terminate Message");
             nc.publish(TERMINATE_SUBJECT, null);
 
-
-            int sleeps = 1;
-            while (sendStats.getTotalPayloadBufferedMessages() < pubId.get()) {
-                if (--sleeps == 0) {
-                    sleeps = 10;
-                    log(TPS_SENDER, "Payload Buffered Messages So Far: " + sendStats.getTotalPayloadBufferedMessages());
-                }
-                sleep(100);
-            }
+            sleep(5000);
             log(TPS_SENDER, "Done");
         }
     }
@@ -409,9 +401,8 @@ public class CoreMessageLoss {
             r.ready.set(true);
             log(label, "READY");
 
-            while (!r.done.get()) {
-                sleep(200);
-            }
+            sleep(5000);
+            log(label, "Done");
         }
     }
 
