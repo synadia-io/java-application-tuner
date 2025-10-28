@@ -8,7 +8,7 @@ Please see the main [README](README.md) for instructions on how to run the progr
 #### Results Explanation
 
 * Buffered Messages - Messages that were moved from the queue to the byte array
-* Socket Messages - Message that were written to the socket from the byte array
+* Socket Messages - Messages that were written to the socket from the byte array
 * Gap Message - A gap was found in the message ids.
 
 ```
